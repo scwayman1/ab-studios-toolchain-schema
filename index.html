@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AB Studios — 2026 Toolchain Schema</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   AB Studios — 2026 AI Toolchain Schema
+   Developer-Friendly Interactive Product Document
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-primary: #0c0a0f;
+  --bg-secondary: #13111a;
+  --bg-card: #1a1724;
+  --bg-card-hover: #221e30;
+  --bg-code: #0d0b12;
+  --border: #2a2640;
+  --border-glow: #ed6a35;
+  --text-primary: #eeedf2;
+  --text-secondary: #9e9ab0;
+  --text-muted: #6b6780;
+  --accent-1: #ed6a35;
+  --accent-2: #d64090;
+  --accent-3: #f09060;
+  --accent-4: #e84890;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --info: #60a5fa;
+  --gradient-1: linear-gradient(135deg, #ed6a35, #d64090);
+  --gradient-2: linear-gradient(135deg, #f09060, #ed6a35);
+  --gradient-hero: linear-gradient(180deg, rgba(237,106,53,0.12) 0%, rgba(12,10,15,0) 50%);
+  --radius: 12px;
+  --radius-lg: 16px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--accent-1); border-radius: 3px; }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+.gradient-text {
+  background: var(--gradient-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Animations ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(237,106,53,0.2); }
+  50% { box-shadow: 0 0 40px rgba(237,106,53,0.4); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes slideDown {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 800px; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ── Particles ── */
+.particles-bg {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.particle {
+  position: absolute; width: 3px; height: 3px;
+  background: var(--accent-1); border-radius: 50%;
+  opacity: 0.15; animation: float 8s ease-in-out infinite;
+}
+.particle:nth-child(2n) { background: var(--accent-2); animation-duration: 10s; }
+.particle:nth-child(3n) { background: var(--accent-3); animation-duration: 12s; width: 2px; height: 2px; }
+
+/* ── Navigation ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0.75rem 2rem;
+  background: rgba(12,10,15,0.88);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(237,106,53,0.08);
+  transition: all 0.3s ease;
+}
+.nav.scrolled {
+  padding: 0.5rem 2rem;
+  background: rgba(12,10,15,0.96);
+  border-bottom: 1px solid rgba(237,106,53,0.15);
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand { display: flex; align-items: center; gap: 0.6rem; }
+.nav-logo {
+  width: 32px; height: 32px;
+  background: var(--gradient-1); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.nav-logo img { width: 32px; height: 32px; object-fit: cover; display: block; }
+.nav-title { font-weight: 700; font-size: 0.9rem; letter-spacing: -0.02em; }
+.nav-links { display: flex; gap: 0.2rem; list-style: none; }
+.nav-links a {
+  color: var(--text-muted); text-decoration: none;
+  font-size: 0.75rem; font-weight: 500;
+  padding: 0.35rem 0.65rem; border-radius: 6px; transition: all 0.2s;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--text-primary); background: rgba(237,106,53,0.1);
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative; min-height: 90vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 7rem 2rem 4rem; overflow: hidden;
+  background: url('assets/hero-bg.png') center center / cover no-repeat;
+}
+.hero::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(12,10,15,0.3) 0%, rgba(12,10,15,0.85) 70%, var(--bg-primary) 100%);
+}
+.hero-content { position: relative; z-index: 2; max-width: 800px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: rgba(237,106,53,0.08); border: 1px solid rgba(237,106,53,0.15);
+  border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+  color: var(--accent-3); margin-bottom: 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  animation: fadeInUp 0.6s ease;
+}
+.hero-badge-dot {
+  width: 7px; height: 7px; background: var(--success);
+  border-radius: 50%; animation: pulse 2s ease-in-out infinite;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.03em; margin-bottom: 1.25rem;
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+.hero-subtitle {
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  color: var(--text-secondary); max-width: 600px;
+  margin: 0 auto 2rem; line-height: 1.7;
+  animation: fadeInUp 0.6s ease 0.2s both;
+}
+.hero-stats {
+  display: flex; justify-content: center; gap: 2.5rem;
+  animation: fadeInUp 0.6s ease 0.3s both;
+}
+.hero-stat { text-align: center; }
+.hero-stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.8rem; font-weight: 700;
+  background: var(--gradient-1);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-stat-label {
+  font-size: 0.7rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;
+}
+
+/* ── Sections ── */
+.section { position: relative; padding: 5rem 0; z-index: 1; }
+.section-header { text-align: center; margin-bottom: 3rem; }
+.section-number {
+  display: inline-block; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; font-weight: 600; color: var(--accent-1);
+  background: rgba(237,106,53,0.08); border: 1px solid rgba(237,106,53,0.15);
+  padding: 0.25rem 0.7rem; border-radius: 6px; margin-bottom: 0.75rem;
+}
+.section h2 {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 800; letter-spacing: -0.03em;
+  margin-bottom: 0.75rem; line-height: 1.2;
+}
+.section-desc {
+  font-size: 0.95rem; color: var(--text-secondary);
+  max-width: 600px; margin: 0 auto; line-height: 1.7;
+}
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0 auto; max-width: 500px;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.75rem;
+  transition: all 0.3s ease; position: relative; overflow: hidden;
+  cursor: pointer;
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--gradient-1); opacity: 0; transition: opacity 0.3s;
+}
+.card:hover {
+  border-color: rgba(237,106,53,0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(237,106,53,0.08);
+}
+.card:hover::before { opacity: 1; }
+.card-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem; font-size: 1.2rem;
+}
+.card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
+.card p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6; }
+
+/* ── Code Blocks ── */
+.code-block {
+  background: var(--bg-code); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+  line-height: 1.8; overflow-x: auto; position: relative;
+  margin: 1.5rem 0;
+}
+.code-block-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 1rem; padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.code-block-title {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+  font-weight: 600; color: var(--accent-3); text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.copy-btn {
+  background: rgba(237,106,53,0.1); border: 1px solid rgba(237,106,53,0.2);
+  color: var(--accent-3); padding: 0.3rem 0.7rem;
+  border-radius: 6px; font-size: 0.65rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  font-family: 'JetBrains Mono', monospace;
+}
+.copy-btn:hover { background: rgba(237,106,53,0.2); }
+.copy-btn.copied { background: rgba(52,211,153,0.15); border-color: rgba(52,211,153,0.3); color: var(--success); }
+.code-keyword { color: var(--accent-2); }
+.code-string { color: var(--success); }
+.code-type { color: var(--accent-3); }
+.code-comment { color: var(--text-muted); font-style: italic; }
+.code-prop { color: var(--info); }
+.code-number { color: var(--warning); }
+
+/* ── Interactive Expandable Panels ── */
+.expand-panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  margin-bottom: 0.75rem; transition: all 0.3s ease;
+}
+.expand-panel:hover { border-color: rgba(237,106,53,0.2); }
+.expand-panel.active { border-color: rgba(237,106,53,0.3); }
+.expand-header {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.25rem 1.5rem; cursor: pointer;
+  transition: background 0.2s;
+}
+.expand-header:hover { background: rgba(237,106,53,0.03); }
+.expand-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.expand-title { font-weight: 700; font-size: 0.95rem; flex: 1; }
+.expand-subtitle { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem; }
+.expand-chevron {
+  width: 20px; height: 20px; transition: transform 0.3s ease;
+  color: var(--text-muted);
+}
+.expand-panel.active .expand-chevron { transform: rotate(180deg); color: var(--accent-1); }
+.expand-body {
+  max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease;
+  padding: 0 1.5rem;
+}
+.expand-panel.active .expand-body {
+  max-height: 600px; padding: 0 1.5rem 1.5rem;
+}
+.expand-body-inner {
+  padding-top: 0.75rem; border-top: 1px solid var(--border);
+}
+
+/* ── Pipeline Diagram ── */
+.pipeline {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; flex-wrap: wrap; margin: 2rem 0;
+}
+.pipeline-step {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0.5rem; cursor: pointer; transition: all 0.3s;
+  padding: 0.75rem;
+}
+.pipeline-step:hover { transform: translateY(-4px); }
+.pipeline-step.active .pipeline-node {
+  box-shadow: 0 0 24px rgba(237,106,53,0.4);
+  border-color: var(--accent-1);
+}
+.pipeline-node {
+  width: 56px; height: 56px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; background: var(--bg-card);
+  border: 2px solid var(--border); transition: all 0.3s;
+}
+.pipeline-label {
+  font-size: 0.7rem; font-weight: 600; color: var(--text-secondary);
+  text-align: center; max-width: 80px;
+}
+.pipeline-arrow {
+  font-size: 1.2rem; color: var(--accent-1); margin: 0 0.25rem;
+  opacity: 0.5;
+}
+.pipeline-detail {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.5rem;
+  margin-top: 1.5rem; display: none;
+  animation: fadeInUp 0.3s ease;
+}
+.pipeline-detail.active { display: block; }
+.pipeline-detail h4 {
+  font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;
+  color: var(--accent-3);
+}
+.pipeline-detail p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; }
+
+/* ── Constraint Grid ── */
+.constraint-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem; max-width: 900px; margin: 0 auto;
+}
+.constraint-item {
+  display: flex; align-items: flex-start; gap: 1rem;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem;
+  cursor: pointer; transition: all 0.3s;
+}
+.constraint-item:hover {
+  border-color: rgba(237,106,53,0.25);
+  box-shadow: 0 8px 32px rgba(237,106,53,0.06);
+}
+.constraint-item.active {
+  border-color: rgba(237,106,53,0.4);
+  background: rgba(237,106,53,0.04);
+}
+.constraint-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.constraint-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem; font-weight: 600; color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+.constraint-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+.constraint-cascade {
+  display: none; margin-top: 0.75rem; padding-top: 0.75rem;
+  border-top: 1px solid var(--border); font-size: 0.75rem;
+  color: var(--accent-3); font-family: 'JetBrains Mono', monospace;
+}
+.constraint-item.active .constraint-cascade { display: block; }
+
+/* ── Section Architecture Grid ── */
+.section-arch-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem; max-width: 900px; margin: 0 auto;
+}
+.section-block {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem;
+  text-align: center; transition: all 0.3s; cursor: pointer;
+}
+.section-block:hover {
+  border-color: rgba(237,106,53,0.3);
+  transform: translateY(-2px);
+}
+.section-block-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.section-block-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem; font-weight: 600; margin-bottom: 0.5rem;
+}
+.section-block-tags { display: flex; justify-content: center; gap: 0.4rem; flex-wrap: wrap; }
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; padding: 0.2rem 0.5rem;
+  border-radius: 4px; font-weight: 500;
+}
+.tag-edit { background: rgba(96,165,250,0.1); color: var(--info); border: 1px solid rgba(96,165,250,0.2); }
+.tag-regen { background: rgba(52,211,153,0.1); color: var(--success); border: 1px solid rgba(52,211,153,0.2); }
+
+/* ── Cascade Flow ── */
+.cascade-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem; max-width: 900px; margin: 0 auto;
+}
+.cascade-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.5rem;
+  cursor: pointer; transition: all 0.3s;
+}
+.cascade-card:hover { border-color: rgba(237,106,53,0.3); }
+.cascade-card.active {
+  border-color: var(--accent-1);
+  box-shadow: 0 0 20px rgba(237,106,53,0.1);
+}
+.cascade-trigger {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem; font-weight: 700; color: var(--accent-1);
+  margin-bottom: 0.75rem;
+}
+.cascade-effects {
+  display: none; padding-top: 0.75rem;
+}
+.cascade-card.active .cascade-effects { display: block; }
+.cascade-effect {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.8rem; color: var(--text-secondary);
+  padding: 0.35rem 0;
+}
+.cascade-arrow { color: var(--accent-3); font-weight: 700; }
+
+/* ── Confidence Pipeline ── */
+.confidence-steps {
+  max-width: 700px; margin: 0 auto;
+}
+.confidence-step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  padding: 1.25rem 0; cursor: pointer; transition: all 0.2s;
+  border-left: 2px solid var(--border); padding-left: 1.5rem;
+  margin-left: 1rem; position: relative;
+}
+.confidence-step::before {
+  content: ''; position: absolute; left: -7px; top: 1.5rem;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--bg-card); border: 2px solid var(--border);
+  transition: all 0.3s;
+}
+.confidence-step:hover::before,
+.confidence-step.active::before {
+  background: var(--accent-1); border-color: var(--accent-1);
+  box-shadow: 0 0 12px rgba(237,106,53,0.4);
+}
+.confidence-step.active { border-left-color: var(--accent-1); }
+.confidence-step-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+  background: rgba(237,106,53,0.08); border: 1px solid rgba(237,106,53,0.15);
+}
+.confidence-step-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
+.confidence-step-desc {
+  font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;
+  max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+}
+.confidence-step.active .confidence-step-desc { max-height: 200px; }
+.confidence-dims {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  margin-top: 1.5rem; justify-content: center;
+}
+.confidence-dim {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; padding: 0.35rem 0.75rem;
+  border-radius: 6px; font-weight: 500;
+  background: rgba(237,106,53,0.06); border: 1px solid rgba(237,106,53,0.12);
+  color: var(--accent-3);
+}
+
+/* ── Principle Box ── */
+.principle-box {
+  max-width: 700px; margin: 2rem auto;
+  background: var(--bg-card); border: 1px solid rgba(237,106,53,0.2);
+  border-radius: var(--radius-lg); padding: 2.5rem;
+  text-align: center; position: relative; overflow: hidden;
+}
+.principle-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--gradient-1);
+}
+.principle-box h3 {
+  font-size: 1.3rem; font-weight: 800; margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+.principle-box p {
+  font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.principle-tags {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+}
+.principle-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; padding: 0.4rem 0.85rem;
+  border-radius: 6px; font-weight: 600;
+  background: rgba(237,106,53,0.08); border: 1px solid rgba(237,106,53,0.15);
+  color: var(--accent-3);
+}
+
+/* ── System Architecture SVG ── */
+.system-diagram {
+  max-width: 800px; margin: 2rem auto;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 2rem;
+  overflow: hidden;
+}
+.svg-diagram { width: 100%; height: auto; }
+.svg-diagram text { font-family: 'Inter', sans-serif; }
+.svg-diagram .mono-text { font-family: 'JetBrains Mono', monospace; }
+.svg-layer { cursor: pointer; transition: opacity 0.3s; }
+.svg-layer:hover { opacity: 0.85; }
+
+/* ── Comparison ── */
+.comparison {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 1.5rem; align-items: center; max-width: 800px; margin: 2rem auto;
+}
+.comparison-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 2rem; text-align: center;
+}
+.comparison-box h4 {
+  font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 1.25rem;
+  color: var(--text-muted);
+}
+.comparison-flow { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+.comparison-flow-step {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; padding: 0.5rem 1rem;
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-secondary); transition: all 0.3s;
+}
+.comparison-flow-step:hover { border-color: rgba(237,106,53,0.3); color: var(--accent-3); }
+.comparison-flow-arrow { color: var(--text-muted); font-size: 0.8rem; }
+.comparison-arrow {
+  font-size: 2rem; color: var(--accent-1); font-weight: 300;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ── Image Containers ── */
+.visual-block {
+  max-width: 900px; margin: 2rem auto;
+  border-radius: var(--radius-lg); overflow: hidden;
+  border: 1px solid var(--border);
+}
+.visual-block img { width: 100%; display: block; }
+
+/* ── Footer ── */
+.footer {
+  text-align: center; padding: 3rem 2rem;
+  color: var(--text-muted); font-size: 0.8rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+  .comparison { grid-template-columns: 1fr; }
+  .comparison-arrow { transform: rotate(90deg); justify-self: center; }
+  .pipeline { flex-direction: column; }
+  .pipeline-arrow { transform: rotate(90deg); }
+}
+</style>
+</head>
+<body>
+
+<!-- Particles -->
+<div class="particles-bg" id="particles"></div>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <div class="nav-logo"><img src="assets/ab-studios-logo-full.png" alt="AB" onerror="this.style.display='none';this.parentElement.textContent='AB';"></div>
+      <span class="nav-title">AB Studios</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#lesson-object">Lesson Object</a></li>
+      <li><a href="#constraints">Constraints</a></li>
+      <li><a href="#sections">Sections</a></li>
+      <li><a href="#cascade">Cascade</a></li>
+      <li><a href="#confidence">Confidence</a></li>
+      <li><a href="#system">System View</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      <span>2026 AI Toolchain Schema</span>
+    </div>
+    <h1>Proposed <span class="gradient-text">Toolchain Schema</span> Update</h1>
+    <p class="hero-subtitle">The canonical schema powering multi-agent lesson planning intelligence, constraint cascading, structured editing, and iterative confidence refinement — all on one shared model.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">8</div>
+        <div class="hero-stat-label">Schema Sections</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">8</div>
+        <div class="hero-stat-label">Constraint Inputs</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">5</div>
+        <div class="hero-stat-label">Agent Pipeline</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     01 — ARCHITECTURE OVERVIEW
+     ═══════════════════════════════════════════ -->
+<section class="section" id="architecture">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">01</div>
+      <h2>Toolchain <span class="gradient-text">Architecture</span> Overview</h2>
+      <p class="section-desc">The lesson planner evolves from a single-shot generator to a multi-agent refinement pipeline.</p>
+    </div>
+
+    <!-- Current vs 2026 Comparison -->
+    <div class="comparison reveal">
+      <div class="comparison-box">
+        <h4 style="color: var(--text-muted);">Current Model</h4>
+        <div class="comparison-flow">
+          <div class="comparison-flow-step">Input</div>
+          <div class="comparison-flow-arrow">↓</div>
+          <div class="comparison-flow-step">Generate Lesson</div>
+          <div class="comparison-flow-arrow">↓</div>
+          <div class="comparison-flow-step">Deliver</div>
+        </div>
+      </div>
+      <div class="comparison-arrow">→</div>
+      <div class="comparison-box" style="border-color: rgba(237,106,53,0.25);">
+        <h4 style="color: var(--accent-1);">2026 Model</h4>
+        <div class="comparison-flow">
+          <div class="comparison-flow-step" style="border-color: rgba(237,106,53,0.25); color: var(--accent-3);">Input</div>
+          <div class="comparison-flow-arrow" style="color: var(--accent-1);">↓</div>
+          <div class="comparison-flow-step" style="border-color: rgba(237,106,53,0.25); color: var(--accent-3);">Draft Generator</div>
+          <div class="comparison-flow-arrow" style="color: var(--accent-1);">↓</div>
+          <div class="comparison-flow-step" style="border-color: rgba(52,211,153,0.25); color: var(--success);">Confidence Evaluator</div>
+          <div class="comparison-flow-arrow" style="color: var(--accent-1);">↓</div>
+          <div class="comparison-flow-step" style="border-color: rgba(251,191,36,0.25); color: var(--warning);">Structured Critique</div>
+          <div class="comparison-flow-arrow" style="color: var(--accent-1);">↓</div>
+          <div class="comparison-flow-step" style="border-color: rgba(214,64,144,0.25); color: var(--accent-4);">Refiner</div>
+          <div class="comparison-flow-arrow" style="color: var(--accent-1);">↓</div>
+          <div class="comparison-flow-step" style="border-color: rgba(237,106,53,0.25); color: var(--accent-3);">Deliver</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-desc reveal" style="margin-top: 2rem; text-align: center;">This pipeline increases lesson reliability and delivery confidence without increasing UI complexity.</p>
+
+    <!-- Pipeline Image -->
+    <div class="visual-block reveal" style="margin-top: 2rem;">
+      <img src="assets/pipeline-diagram.png" alt="Multi-agent pipeline diagram" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     02 — CANONICAL LESSON OBJECT
+     ═══════════════════════════════════════════ -->
+<section class="section" id="lesson-object">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">02</div>
+      <h2>Canonical <span class="gradient-text">Lesson Object</span></h2>
+      <p class="section-desc">All intelligence, editing, and refinement operate on the same structured object. This prevents fragmentation across product, intelligence, and analytics layers.</p>
+    </div>
+
+    <!-- Interactive JSON Schema -->
+    <div class="code-block reveal">
+      <div class="code-block-header">
+        <span class="code-block-title">lesson_object.schema</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code><span class="code-keyword">interface</span> <span class="code-type">Lesson</span> {
+  <span class="code-prop">metadata</span>: {
+    <span class="code-prop">id</span>: <span class="code-type">string</span>;
+    <span class="code-prop">title</span>: <span class="code-type">string</span>;
+    <span class="code-prop">created_at</span>: <span class="code-type">timestamp</span>;
+    <span class="code-prop">version</span>: <span class="code-type">number</span>;
+  };
+
+  <span class="code-prop">constraints</span>: <span class="code-type">ConstraintSet</span>;    <span class="code-comment">// 8 high-level inputs</span>
+
+  <span class="code-prop">sections</span>: <span class="code-type">LessonSection</span>[];   <span class="code-comment">// 8 structured components</span>
+
+  <span class="code-prop">confidence_score</span>: <span class="code-type">number</span>;  <span class="code-comment">// 0.0 – 1.0 from evaluator</span>
+}</code></pre>
+    </div>
+
+    <!-- Expandable Object Tree -->
+    <div style="max-width: 700px; margin: 2rem auto;">
+      <div class="expand-panel reveal" data-expand="metadata">
+        <div class="expand-header" onclick="toggleExpand(this)">
+          <div class="expand-icon" style="background: rgba(237,106,53,0.1);">📋</div>
+          <div>
+            <div class="expand-title">metadata</div>
+            <div class="expand-subtitle">Lesson identity, versioning, and timestamps</div>
+          </div>
+          <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+        </div>
+        <div class="expand-body">
+          <div class="expand-body-inner">
+            <div class="code-block" style="margin: 0;">
+              <pre><code><span class="code-prop">id</span>: <span class="code-type">string</span>       <span class="code-comment">// unique lesson identifier</span>
+<span class="code-prop">title</span>: <span class="code-type">string</span>    <span class="code-comment">// generated lesson title</span>
+<span class="code-prop">created_at</span>: <span class="code-type">ts</span>   <span class="code-comment">// creation timestamp</span>
+<span class="code-prop">version</span>: <span class="code-type">number</span>  <span class="code-comment">// schema version for migrations</span></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="expand-panel reveal reveal-delay-1" data-expand="constraints">
+        <div class="expand-header" onclick="toggleExpand(this)">
+          <div class="expand-icon" style="background: rgba(214,64,144,0.1);">⚙️</div>
+          <div>
+            <div class="expand-title">constraints</div>
+            <div class="expand-subtitle">8 high-level inputs driving generation and cascade logic</div>
+          </div>
+          <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+        </div>
+        <div class="expand-body">
+          <div class="expand-body-inner">
+            <div class="code-block" style="margin: 0;">
+              <pre><code><span class="code-prop">grade_level</span>: <span class="code-type">string</span>
+<span class="code-prop">time_minutes</span>: <span class="code-type">number</span>
+<span class="code-prop">materials</span>: <span class="code-type">string[]</span>
+<span class="code-prop">group_size</span>: <span class="code-type">number</span>
+<span class="code-prop">energy_level</span>: <span class="code-type">enum</span>  <span class="code-comment">// low | medium | high</span>
+<span class="code-prop">delivery_mode</span>: <span class="code-type">enum</span> <span class="code-comment">// in-person | virtual | hybrid</span>
+<span class="code-prop">theme</span>: <span class="code-type">string</span>
+<span class="code-prop">learning_objective</span>: <span class="code-type">string</span></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="expand-panel reveal reveal-delay-2" data-expand="sections">
+        <div class="expand-header" onclick="toggleExpand(this)">
+          <div class="expand-icon" style="background: rgba(52,211,153,0.1);">📐</div>
+          <div>
+            <div class="expand-title">sections</div>
+            <div class="expand-subtitle">8 independently editable and regenerable lesson components</div>
+          </div>
+          <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+        </div>
+        <div class="expand-body">
+          <div class="expand-body-inner">
+            <div class="code-block" style="margin: 0;">
+              <pre><code><span class="code-keyword">interface</span> <span class="code-type">LessonSection</span> {
+  <span class="code-prop">type</span>: <span class="code-string">"hook"</span> | <span class="code-string">"setup"</span> | <span class="code-string">"materials_list"</span>
+      | <span class="code-string">"activity_steps"</span> | <span class="code-string">"engagement_checks"</span>
+      | <span class="code-string">"reflection"</span> | <span class="code-string">"cleanup"</span> | <span class="code-string">"backup_plan"</span>;
+  <span class="code-prop">content</span>: <span class="code-type">StructuredContent</span>;
+  <span class="code-prop">editable</span>: <span class="code-type">boolean</span>;       <span class="code-comment">// true</span>
+  <span class="code-prop">regenerable</span>: <span class="code-type">boolean</span>;    <span class="code-comment">// true</span>
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="expand-panel reveal reveal-delay-3" data-expand="confidence">
+        <div class="expand-header" onclick="toggleExpand(this)">
+          <div class="expand-icon" style="background: rgba(251,191,36,0.1);">🎯</div>
+          <div>
+            <div class="expand-title">confidence_score</div>
+            <div class="expand-subtitle">Multi-agent evaluation score from 0.0 to 1.0</div>
+          </div>
+          <svg class="expand-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+        </div>
+        <div class="expand-body">
+          <div class="expand-body-inner">
+            <div class="code-block" style="margin: 0;">
+              <pre><code><span class="code-prop">confidence_score</span>: <span class="code-type">number</span>  <span class="code-comment">// 0.0 – 1.0</span>
+<span class="code-comment">// Evaluated across 6 dimensions:</span>
+<span class="code-comment">// time_realism, material_feasibility,</span>
+<span class="code-comment">// setup_clarity, engagement_arc,</span>
+<span class="code-comment">// energy_pacing, backup_inclusion</span></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     03 — CONSTRAINT MODEL
+     ═══════════════════════════════════════════ -->
+<section class="section" id="constraints">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">03</div>
+      <h2>Constraint <span class="gradient-text">Model</span></h2>
+      <p class="section-desc">High-level constraints drive lesson generation and cascade logic. Click any constraint to see its cascade effects.</p>
+    </div>
+
+    <div class="constraint-grid">
+      <div class="constraint-item reveal" onclick="toggleConstraint(this)">
+        <div class="constraint-icon" style="background: rgba(237,106,53,0.1);">🎓</div>
+        <div>
+          <div class="constraint-name">grade_level</div>
+          <div class="constraint-desc">Target grade for vocabulary, complexity, and pacing calibration</div>
+          <div class="constraint-cascade">→ vocabulary adjusts<br>→ reflection complexity adjusts<br>→ pacing adjusts</div>
+        </div>
+      </div>
+      <div class="constraint-item reveal reveal-delay-1" onclick="toggleConstraint(this)">
+        <div class="constraint-icon" style="background: rgba(214,64,144,0.1);">⏱️</div>
+        <div>
+          <div class="constraint-name">time_minutes</div>
+          <div class="constraint-desc">Session duration driving activity step compression or expansion</div>
+          <div class="constraint-cascade">→ activity steps compress/expand<br>→ backup plan adapts</div>
+        </div>
+      </div>
+      <div class="constraint-item reveal" onclick="toggleConstraint(this)">
+        <div class="constraint-icon" style="background: rgba(52,211,153,0.1);">🧱</div>
+        <div>
+          <div class="constraint-name">materials</div>
+          <div class="constraint-desc">Available materials shaping setup instructions and activity mechanics</div>
+          <div class="constraint-cascade">→ setup adjusts<br>→ activity mechanics adapt</div>
+        </div>
+      </div>
+      <div class="constraint-item reveal reveal-delay-1" onclick="toggleConstraint(this)">
+        <div class="constraint-icon" style="background: rgba(96,165,250,0.1);">👥</div>
+        <div>
+          <div class="constraint-name">group_size</div>
+          <div class="constraint-desc">Participant count determining facilitation guidance and grouping</div>
+          <div class="constraint-cascade">→ facilitation guidance updates</div>
+        </div>
+      </div>
+      <div class="constraint-item reveal" onclick="toggleConstraint(this)">
+        <div class="constraint-icon" style="background: rgba(251,191,36,0.1);">⚡</div>
+        <div>
+          <div class="constraint-name">energy_level</div>
+          <div class="constraint-desc">Movement intensity and engagement pacing calibration</div>
+          <div class="constraint-cascade">→ movement intensity adjusts<br>→ engagement pacing shifts</div>
+        </div>
+      </div>
+      <div class="constraint-item reveal reveal-delay-1" onclick="toggleConstraint(this)">
+        <div class="constraint-icon" style="background: rgba(237,106,53,0.1);">📡</div>
+        <div>
+          <div class="constraint-name">delivery_mode</div>
+          <div class="constraint-desc">In-person, virtual, or hybrid format configuration</div>
+          <div class="constraint-cascade">→ activity format adjusts<br>→ engagement checks adapt</div>
+        </div>
+      </div>
+      <div class="constraint-item reveal" onclick="toggleConstraint(this)">
+        <div class="constraint-icon" style="background: rgba(240,144,96,0.1);">🎨</div>
+        <div>
+          <div class="constraint-name">theme</div>
+          <div class="constraint-desc">Thematic wrapper contextualizing lesson content and engagement hooks</div>
+          <div class="constraint-cascade">→ hook content adapts<br>→ activity theming updates</div>
+        </div>
+      </div>
+      <div class="constraint-item reveal reveal-delay-1" onclick="toggleConstraint(this)">
+        <div class="constraint-icon" style="background: rgba(214,64,144,0.1);">🎯</div>
+        <div>
+          <div class="constraint-name">learning_objective</div>
+          <div class="constraint-desc">Core educational outcome anchoring all lesson components</div>
+          <div class="constraint-cascade">→ all sections align to objective<br>→ reflection targets update</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Constraint Schema Code Block -->
+    <div class="code-block reveal" style="max-width: 700px; margin: 2rem auto;">
+      <div class="code-block-header">
+        <span class="code-block-title">constraint_set.ts</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code><span class="code-keyword">interface</span> <span class="code-type">ConstraintSet</span> {
+  <span class="code-prop">grade_level</span>: <span class="code-type">string</span>;
+  <span class="code-prop">time_minutes</span>: <span class="code-type">number</span>;
+  <span class="code-prop">materials</span>: <span class="code-type">string</span>[];
+  <span class="code-prop">group_size</span>: <span class="code-type">number</span>;
+  <span class="code-prop">energy_level</span>: <span class="code-string">"low"</span> | <span class="code-string">"medium"</span> | <span class="code-string">"high"</span>;
+  <span class="code-prop">delivery_mode</span>: <span class="code-string">"in-person"</span> | <span class="code-string">"virtual"</span> | <span class="code-string">"hybrid"</span>;
+  <span class="code-prop">theme</span>: <span class="code-type">string</span>;
+  <span class="code-prop">learning_objective</span>: <span class="code-type">string</span>;
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     04 — STRUCTURED LESSON ARCHITECTURE
+     ═══════════════════════════════════════════ -->
+<section class="section" id="sections">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">04</div>
+      <h2>Structured <span class="gradient-text">Lesson Architecture</span></h2>
+      <p class="section-desc">Lessons are componentized into 8 independently editable and regenerable sections, each stored as structured data.</p>
+    </div>
+
+    <div class="section-arch-grid">
+      <div class="section-block reveal">
+        <div class="section-block-icon">🪝</div>
+        <div class="section-block-name">hook</div>
+        <div class="section-block-tags">
+          <span class="tag tag-edit">editable</span>
+          <span class="tag tag-regen">regenerable</span>
+        </div>
+      </div>
+      <div class="section-block reveal reveal-delay-1">
+        <div class="section-block-icon">🔧</div>
+        <div class="section-block-name">setup</div>
+        <div class="section-block-tags">
+          <span class="tag tag-edit">editable</span>
+          <span class="tag tag-regen">regenerable</span>
+        </div>
+      </div>
+      <div class="section-block reveal reveal-delay-2">
+        <div class="section-block-icon">📦</div>
+        <div class="section-block-name">materials_list</div>
+        <div class="section-block-tags">
+          <span class="tag tag-edit">editable</span>
+          <span class="tag tag-regen">regenerable</span>
+        </div>
+      </div>
+      <div class="section-block reveal reveal-delay-3">
+        <div class="section-block-icon">🏃</div>
+        <div class="section-block-name">activity_steps</div>
+        <div class="section-block-tags">
+          <span class="tag tag-edit">editable</span>
+          <span class="tag tag-regen">regenerable</span>
+        </div>
+      </div>
+      <div class="section-block reveal">
+        <div class="section-block-icon">✅</div>
+        <div class="section-block-name">engagement_checks</div>
+        <div class="section-block-tags">
+          <span class="tag tag-edit">editable</span>
+          <span class="tag tag-regen">regenerable</span>
+        </div>
+      </div>
+      <div class="section-block reveal reveal-delay-1">
+        <div class="section-block-icon">🪞</div>
+        <div class="section-block-name">reflection</div>
+        <div class="section-block-tags">
+          <span class="tag tag-edit">editable</span>
+          <span class="tag tag-regen">regenerable</span>
+        </div>
+      </div>
+      <div class="section-block reveal reveal-delay-2">
+        <div class="section-block-icon">🧹</div>
+        <div class="section-block-name">cleanup</div>
+        <div class="section-block-tags">
+          <span class="tag tag-edit">editable</span>
+          <span class="tag tag-regen">regenerable</span>
+        </div>
+      </div>
+      <div class="section-block reveal reveal-delay-3">
+        <div class="section-block-icon">🔄</div>
+        <div class="section-block-name">backup_plan</div>
+        <div class="section-block-tags">
+          <span class="tag tag-edit">editable</span>
+          <span class="tag tag-regen">regenerable</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block reveal" style="max-width: 700px; margin: 2rem auto;">
+      <div class="code-block-header">
+        <span class="code-block-title">lesson_section.ts</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code><span class="code-keyword">type</span> <span class="code-type">SectionType</span> =
+  | <span class="code-string">"hook"</span> | <span class="code-string">"setup"</span> | <span class="code-string">"materials_list"</span>
+  | <span class="code-string">"activity_steps"</span> | <span class="code-string">"engagement_checks"</span>
+  | <span class="code-string">"reflection"</span> | <span class="code-string">"cleanup"</span> | <span class="code-string">"backup_plan"</span>;
+
+<span class="code-keyword">interface</span> <span class="code-type">LessonSection</span> {
+  <span class="code-prop">type</span>: <span class="code-type">SectionType</span>;
+  <span class="code-prop">content</span>: <span class="code-type">StructuredContent</span>;
+  <span class="code-prop">editable</span>: <span class="code-number">true</span>;
+  <span class="code-prop">regenerable</span>: <span class="code-number">true</span>;
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     05 — CASCADING CONSTRAINT INTELLIGENCE
+     ═══════════════════════════════════════════ -->
+<section class="section" id="cascade">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">05</div>
+      <h2>Cascading <span class="gradient-text">Constraint Intelligence</span></h2>
+      <p class="section-desc">When constraints change, dependent lesson sections update automatically. Click a trigger to explore its cascade effects.</p>
+    </div>
+
+    <div class="cascade-grid">
+      <div class="cascade-card reveal" onclick="toggleCascade(this)">
+        <div class="cascade-trigger">grade_level</div>
+        <div style="font-size: 0.82rem; color: var(--text-muted);">Vocabulary, complexity, and pacing</div>
+        <div class="cascade-effects">
+          <div class="cascade-effect"><span class="cascade-arrow">→</span> vocabulary adjusts</div>
+          <div class="cascade-effect"><span class="cascade-arrow">→</span> reflection complexity adjusts</div>
+          <div class="cascade-effect"><span class="cascade-arrow">→</span> pacing adjusts</div>
+        </div>
+      </div>
+      <div class="cascade-card reveal reveal-delay-1" onclick="toggleCascade(this)">
+        <div class="cascade-trigger">time_minutes</div>
+        <div style="font-size: 0.82rem; color: var(--text-muted);">Activity compression and backup</div>
+        <div class="cascade-effects">
+          <div class="cascade-effect"><span class="cascade-arrow">→</span> activity steps compress/expand</div>
+          <div class="cascade-effect"><span class="cascade-arrow">→</span> backup plan adapts</div>
+        </div>
+      </div>
+      <div class="cascade-card reveal" onclick="toggleCascade(this)">
+        <div class="cascade-trigger">materials</div>
+        <div style="font-size: 0.82rem; color: var(--text-muted);">Setup and activity mechanics</div>
+        <div class="cascade-effects">
+          <div class="cascade-effect"><span class="cascade-arrow">→</span> setup adjusts</div>
+          <div class="cascade-effect"><span class="cascade-arrow">→</span> activity mechanics adapt</div>
+        </div>
+      </div>
+      <div class="cascade-card reveal reveal-delay-1" onclick="toggleCascade(this)">
+        <div class="cascade-trigger">group_size</div>
+        <div style="font-size: 0.82rem; color: var(--text-muted);">Facilitation and grouping</div>
+        <div class="cascade-effects">
+          <div class="cascade-effect"><span class="cascade-arrow">→</span> facilitation guidance updates</div>
+        </div>
+      </div>
+      <div class="cascade-card reveal" onclick="toggleCascade(this)">
+        <div class="cascade-trigger">energy_level</div>
+        <div style="font-size: 0.82rem; color: var(--text-muted);">Movement and engagement pacing</div>
+        <div class="cascade-effects">
+          <div class="cascade-effect"><span class="cascade-arrow">→</span> movement intensity adjusts</div>
+          <div class="cascade-effect"><span class="cascade-arrow">→</span> engagement pacing shifts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cascade Visual -->
+    <div class="visual-block reveal" style="margin-top: 2rem;">
+      <img src="assets/cascade-visual.png" alt="Cascading constraint intelligence visualization" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     06 — ITERATIVE CONFIDENCE REFINEMENT
+     ═══════════════════════════════════════════ -->
+<section class="section" id="confidence">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">06</div>
+      <h2>Iterative <span class="gradient-text">Confidence Refinement</span></h2>
+      <p class="section-desc">An internal multi-agent evaluation loop that increases lesson confidence without requiring educator intervention. Click each step to explore.</p>
+    </div>
+
+    <div class="confidence-steps">
+      <div class="confidence-step reveal active" onclick="toggleConfidence(this)">
+        <div class="confidence-step-icon">📝</div>
+        <div>
+          <div class="confidence-step-title">Draft Generator</div>
+          <div class="confidence-step-desc">Creates the initial lesson draft based on constraint inputs and learning objectives. Produces a complete structured lesson object with all 8 sections populated.</div>
+        </div>
+      </div>
+      <div class="confidence-step reveal" onclick="toggleConfidence(this)">
+        <div class="confidence-step-icon">🔍</div>
+        <div>
+          <div class="confidence-step-title">Confidence Evaluator</div>
+          <div class="confidence-step-desc">Evaluates the draft across six dimensions: time realism, material feasibility, setup clarity, engagement arc, energy pacing, and backup inclusion. Outputs a confidence score from 0.0 to 1.0.</div>
+        </div>
+      </div>
+      <div class="confidence-step reveal" onclick="toggleConfidence(this)">
+        <div class="confidence-step-icon">💬</div>
+        <div>
+          <div class="confidence-step-title">Structured Critique</div>
+          <div class="confidence-step-desc">Generates specific, actionable feedback on areas where the lesson falls short. Identifies gaps in engagement flow, timing, or material alignment.</div>
+        </div>
+      </div>
+      <div class="confidence-step reveal" onclick="toggleConfidence(this)">
+        <div class="confidence-step-icon">🔧</div>
+        <div>
+          <div class="confidence-step-title">Refinement Agent</div>
+          <div class="confidence-step-desc">Applies targeted improvements based on the structured critique. Refines specific sections while preserving overall lesson coherence.</div>
+        </div>
+      </div>
+      <div class="confidence-step reveal" onclick="toggleConfidence(this)">
+        <div class="confidence-step-icon">✅</div>
+        <div>
+          <div class="confidence-step-title">Final Lesson</div>
+          <div class="confidence-step-desc">A high-confidence, delivery-ready lesson that has been evaluated, critiqued, and refined — all before the educator sees it.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="confidence-dims reveal">
+      <div class="confidence-dim">⏱️ time_realism</div>
+      <div class="confidence-dim">🧱 material_feasibility</div>
+      <div class="confidence-dim">🔧 setup_clarity</div>
+      <div class="confidence-dim">📈 engagement_arc</div>
+      <div class="confidence-dim">⚡ energy_pacing</div>
+      <div class="confidence-dim">🔄 backup_inclusion</div>
+    </div>
+
+    <!-- Confidence Loop Visual -->
+    <div class="visual-block reveal" style="margin-top: 2rem;">
+      <img src="assets/confidence-loop.png" alt="Iterative confidence refinement loop" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     07 — ENGINEERING PRINCIPLE
+     ═══════════════════════════════════════════ -->
+<section class="section" id="principle">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">07</div>
+      <h2>Engineering <span class="gradient-text">Principle</span></h2>
+    </div>
+
+    <div class="principle-box reveal">
+      <h3>Structured Objects, Not Free Text</h3>
+      <p>All product intelligence must operate on structured lesson objects, not free-text outputs. This is the foundational engineering principle that enables every capability in this schema.</p>
+      <div class="principle-tags">
+        <span class="principle-tag">Measurable Behavior Loops</span>
+        <span class="principle-tag">Intelligent Constraint Cascading</span>
+        <span class="principle-tag">Reliable Refinement Pipelines</span>
+        <span class="principle-tag">Scalable AI Evolution</span>
+        <span class="principle-tag">Data-Driven Product Decisions</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     SYSTEM VIEW — FULL ARCHITECTURE
+     ═══════════════════════════════════════════ -->
+<section class="section" id="system">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">SYSTEM VIEW</div>
+      <h2>Full System <span class="gradient-text">Architecture</span></h2>
+      <p class="section-desc">The complete end-to-end architecture from Educator UI through intelligence layers. Click any layer to highlight it.</p>
+    </div>
+
+    <div class="system-diagram reveal">
+      <svg viewBox="0 0 800 900" class="svg-diagram" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ed6a35;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#d64090;stop-opacity:1" />
+          </linearGradient>
+          <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f09060;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ed6a35;stop-opacity:1" />
+          </linearGradient>
+          <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#34d399;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ed6a35;stop-opacity:1" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="shadow">
+            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.3"/>
+          </filter>
+        </defs>
+
+        <!-- Connection Lines -->
+        <g opacity="0.4">
+          <line x1="400" y1="90" x2="400" y2="140" stroke="#ed6a35" stroke-width="2" stroke-dasharray="6 4">
+            <animate attributeName="stroke-dashoffset" from="20" to="0" dur="2s" repeatCount="indefinite"/>
+          </line>
+          <line x1="400" y1="230" x2="400" y2="280" stroke="#ed6a35" stroke-width="2" stroke-dasharray="6 4">
+            <animate attributeName="stroke-dashoffset" from="20" to="0" dur="2s" repeatCount="indefinite"/>
+          </line>
+          <line x1="400" y1="340" x2="400" y2="390" stroke="#ed6a35" stroke-width="2" stroke-dasharray="6 4">
+            <animate attributeName="stroke-dashoffset" from="20" to="0" dur="2s" repeatCount="indefinite"/>
+          </line>
+          <line x1="400" y1="500" x2="400" y2="550" stroke="#ed6a35" stroke-width="2" stroke-dasharray="6 4">
+            <animate attributeName="stroke-dashoffset" from="20" to="0" dur="2s" repeatCount="indefinite"/>
+          </line>
+          <line x1="400" y1="660" x2="400" y2="710" stroke="#ed6a35" stroke-width="2" stroke-dasharray="6 4">
+            <animate attributeName="stroke-dashoffset" from="20" to="0" dur="2s" repeatCount="indefinite"/>
+          </line>
+          <line x1="400" y1="800" x2="400" y2="840" stroke="#ed6a35" stroke-width="2" stroke-dasharray="6 4">
+            <animate attributeName="stroke-dashoffset" from="20" to="0" dur="2s" repeatCount="indefinite"/>
+          </line>
+        </g>
+
+        <!-- Arrows -->
+        <g fill="#ed6a35" opacity="0.6">
+          <polygon points="395,140 405,140 400,150"/>
+          <polygon points="395,280 405,280 400,290"/>
+          <polygon points="395,390 405,390 400,400"/>
+          <polygon points="395,550 405,550 400,560"/>
+          <polygon points="395,710 405,710 400,720"/>
+          <polygon points="395,840 405,840 400,850"/>
+        </g>
+
+        <!-- Layer 1: Educator UI -->
+        <g filter="url(#shadow)" class="svg-layer" onclick="highlightLayer(this)">
+          <rect x="150" y="20" width="500" height="70" rx="14" fill="#1a1724" stroke="#ed6a35" stroke-width="1.5"/>
+          <rect x="150" y="20" width="500" height="3" rx="1.5" fill="url(#grad1)"/>
+          <text x="400" y="52" text-anchor="middle" fill="#eeedf2" font-size="14" font-weight="700">Educator UI</text>
+          <text x="400" y="72" text-anchor="middle" fill="#9e9ab0" font-size="10">Planning Prompt · Constraint Inputs · Lesson Editor · Calendar</text>
+        </g>
+
+        <!-- Layer 2: Constraint Engine -->
+        <g filter="url(#shadow)" class="svg-layer" onclick="highlightLayer(this)">
+          <rect x="175" y="150" width="450" height="80" rx="14" fill="#1a1724" stroke="#ed6a35" stroke-width="1.5"/>
+          <rect x="175" y="150" width="450" height="3" rx="1.5" fill="url(#grad2)"/>
+          <text x="400" y="180" text-anchor="middle" fill="#eeedf2" font-size="13" font-weight="700">Constraint Engine</text>
+          <text x="400" y="200" text-anchor="middle" fill="#f09060" font-size="9" class="mono-text">grade_level · time_minutes · materials · group_size</text>
+          <text x="400" y="216" text-anchor="middle" fill="#f09060" font-size="9" class="mono-text">energy_level · delivery_mode · theme · learning_objective</text>
+        </g>
+
+        <!-- Layer 3: Draft Agent -->
+        <g filter="url(#shadow)" class="svg-layer" onclick="highlightLayer(this)">
+          <rect x="250" y="290" width="300" height="50" rx="12" fill="#1a1724" stroke="#d64090" stroke-width="1.5"/>
+          <rect x="250" y="290" width="300" height="3" rx="1.5" fill="url(#grad1)"/>
+          <text x="400" y="322" text-anchor="middle" fill="#eeedf2" font-size="12" font-weight="700">Draft Lesson Agent (Generator)</text>
+        </g>
+
+        <!-- Layer 4: Multi-Agent Intelligence -->
+        <g filter="url(#shadow)" class="svg-layer" onclick="highlightLayer(this)">
+          <rect x="125" y="400" width="550" height="100" rx="14" fill="#1a1724" stroke="#f09060" stroke-width="1.5"/>
+          <rect x="125" y="400" width="550" height="3" rx="1.5" fill="url(#grad1)"/>
+          <text x="400" y="428" text-anchor="middle" fill="#eeedf2" font-size="13" font-weight="700">Multi-Agent Intelligence Layer</text>
+          <rect x="145" y="442" width="140" height="22" rx="6" fill="rgba(237,106,53,0.08)" stroke="rgba(237,106,53,0.15)" stroke-width="1"/>
+          <text x="215" y="457" text-anchor="middle" fill="#f09060" font-size="9" font-weight="500">Confidence Evaluator</text>
+          <rect x="295" y="442" width="140" height="22" rx="6" fill="rgba(237,106,53,0.08)" stroke="rgba(237,106,53,0.15)" stroke-width="1"/>
+          <text x="365" y="457" text-anchor="middle" fill="#f09060" font-size="9" font-weight="500">Structured Critique</text>
+          <rect x="445" y="442" width="210" height="22" rx="6" fill="rgba(237,106,53,0.08)" stroke="rgba(237,106,53,0.15)" stroke-width="1"/>
+          <text x="550" y="457" text-anchor="middle" fill="#f09060" font-size="9" font-weight="500">Refiner · Cascade Engine</text>
+          <text x="400" y="486" text-anchor="middle" fill="#6b6780" font-size="8">time realism · material feasibility · engagement arc · energy pacing · setup clarity · backup</text>
+        </g>
+
+        <!-- Layer 5: Canonical Lesson Object -->
+        <g filter="url(#shadow)" class="svg-layer" onclick="highlightLayer(this)">
+          <rect x="150" y="560" width="500" height="100" rx="14" fill="#1a1724" stroke="#34d399" stroke-width="1.5"/>
+          <rect x="150" y="560" width="500" height="3" rx="1.5" fill="url(#grad3)"/>
+          <text x="400" y="590" text-anchor="middle" fill="#eeedf2" font-size="13" font-weight="700">Canonical Lesson Object</text>
+          <rect x="170" y="604" width="80" height="20" rx="5" fill="rgba(52,211,153,0.08)" stroke="rgba(52,211,153,0.15)" stroke-width="1"/>
+          <text x="210" y="618" text-anchor="middle" fill="#34d399" font-size="9" class="mono-text">metadata</text>
+          <rect x="260" y="604" width="90" height="20" rx="5" fill="rgba(52,211,153,0.08)" stroke="rgba(52,211,153,0.15)" stroke-width="1"/>
+          <text x="305" y="618" text-anchor="middle" fill="#34d399" font-size="9" class="mono-text">constraints</text>
+          <rect x="360" y="604" width="80" height="20" rx="5" fill="rgba(52,211,153,0.08)" stroke="rgba(52,211,153,0.15)" stroke-width="1"/>
+          <text x="400" y="618" text-anchor="middle" fill="#34d399" font-size="9" class="mono-text">sections</text>
+          <rect x="450" y="604" width="90" height="20" rx="5" fill="rgba(52,211,153,0.08)" stroke="rgba(52,211,153,0.15)" stroke-width="1"/>
+          <text x="495" y="618" text-anchor="middle" fill="#34d399" font-size="9" class="mono-text">confidence</text>
+          <text x="400" y="648" text-anchor="middle" fill="#6b6780" font-size="8">hook · setup · materials_list · activity_steps · engagement_checks · reflection · cleanup · backup_plan</text>
+        </g>
+
+        <!-- Layer 6: Cascade Intelligence -->
+        <g filter="url(#shadow)" class="svg-layer" onclick="highlightLayer(this)">
+          <rect x="175" y="720" width="450" height="80" rx="14" fill="#1a1724" stroke="#fbbf24" stroke-width="1.5"/>
+          <rect x="175" y="720" width="450" height="3" rx="1.5" fill="url(#grad2)"/>
+          <text x="400" y="750" text-anchor="middle" fill="#eeedf2" font-size="13" font-weight="700">Cascade Intelligence</text>
+          <text x="400" y="770" text-anchor="middle" fill="#fbbf24" font-size="9" class="mono-text">grade → vocab/complex · time → pacing + steps</text>
+          <text x="400" y="786" text-anchor="middle" fill="#fbbf24" font-size="9" class="mono-text">materials → setup · group_size → facilitation · energy → movement</text>
+        </g>
+
+        <!-- Pulsing dot -->
+        <g>
+          <circle r="3" fill="#ed6a35" filter="url(#glow)">
+            <animateMotion dur="4s" repeatCount="indefinite" path="M400,90 L400,860"/>
+          </circle>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <p>AB Studios — 2026 AI Toolchain Schema · Developer Reference Document</p>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════ -->
+<script>
+// ── Particles ──
+(function() {
+  const c = document.getElementById('particles');
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 8 + 's';
+    c.appendChild(p);
+  }
+})();
+
+// ── Scroll Reveal ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Nav Scroll ──
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ── Smooth Scroll ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// ── Expandable Panels ──
+function toggleExpand(header) {
+  const panel = header.closest('.expand-panel');
+  panel.classList.toggle('active');
+}
+
+// ── Constraint Toggle ──
+function toggleConstraint(el) {
+  el.classList.toggle('active');
+}
+
+// ── Cascade Toggle ──
+function toggleCascade(el) {
+  document.querySelectorAll('.cascade-card').forEach(c => {
+    if (c !== el) c.classList.remove('active');
+  });
+  el.classList.toggle('active');
+}
+
+// ── Confidence Steps ──
+function toggleConfidence(el) {
+  document.querySelectorAll('.confidence-step').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── Copy Code ──
+function copyCode(btn) {
+  const code = btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.textContent).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── SVG Layer Highlight ──
+function highlightLayer(el) {
+  document.querySelectorAll('.svg-layer').forEach(l => l.style.opacity = '0.4');
+  el.style.opacity = '1';
+  setTimeout(() => {
+    document.querySelectorAll('.svg-layer').forEach(l => l.style.opacity = '1');
+  }, 2000);
+}
+
+// ── Active Nav Link ──
+const sections = document.querySelectorAll('.section[id]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 200) current = s.id; });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+
+</body>
+</html>
